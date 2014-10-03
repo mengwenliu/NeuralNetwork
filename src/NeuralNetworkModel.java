@@ -61,21 +61,21 @@ public class NeuralNetworkModel {
 	private void setP(SimpleMatrix p) {
 		this.p = p.copy();
 	}
-	private void setY(SimpleMatrix allY) {
-		this.allY = allY.copy();
-	}
-	private SimpleMatrix getA1() {
-		return this.a1;
-	}
-	private SimpleMatrix getA2() {
-		return this.a2;
-	}
-	private SimpleMatrix getP() {
-		return this.p;
-	}
-	private SimpleMatrix getAllY() {
-		return this.allY;
-	}
+//	private void setY(SimpleMatrix allY) {
+//		this.allY = allY.copy();
+//	}
+//	private SimpleMatrix getA1() {
+//		return this.a1;
+//	}
+//	private SimpleMatrix getA2() {
+//		return this.a2;
+//	}
+//	private SimpleMatrix getP() {
+//		return this.p;
+//	}
+//	private SimpleMatrix getAllY() {
+//		return this.allY;
+//	}
 	
 	public void train(SimpleMatrix allX, SimpleMatrix allY) {
 		theta1 = new SimpleMatrix(randomInitializeWeights(inputLayerSize, hiddenLayerSize));
@@ -192,7 +192,7 @@ public class NeuralNetworkModel {
 			
 			//add regularization 
 			//System.out.println("Add regularizaiton...");
-			Double regCost = this.getRegCostFunction(unRegCost, lambda, m, theta1, theta2);
+			Double regCost = getRegCostFunction(unRegCost, lambda, m, theta1, theta2);
 			System.out.println("regularized cost: " + regCost.toString()); 
 			ArrayList<SimpleMatrix> regGradients = 
 					new ArrayList<SimpleMatrix>(getRegGradients(gradients, theta1, theta2, m, lambda));
@@ -418,21 +418,21 @@ public class NeuralNetworkModel {
 		//SimpleMatrix regTheta1 = theta1.extractMatrix(0, theta1.numCols(), 1, theta2.numCols());
 		//SimpleMatrix regTheta2 = theta2.extractMatrix(0, theta2.numCols(), 1, theta2.numCols());
 		
-		SimpleMatrix delta3 = this.p.minus(this.allY);
-		SimpleMatrix t = new SimpleMatrix(this.getA2().numRows(), this.getA2().numCols());
+		SimpleMatrix delta3 = p.minus(allY);
+		SimpleMatrix t = new SimpleMatrix(a2.numRows(), a2.numCols());
 		t.set(1.0); 
 		// delta2 = (theta1)' * delta3 .* g(z) = (theta1)' * delta3 .* a1(1-a1)
 //		printMatrixDimension(theta2, "theta2");
 //		printMatrixDimension(delta3, "delta3");
 		
-		SimpleMatrix delta2 = theta2.transpose().mult(delta3).elementMult(this.getA2().elementMult(this.getA2().scale(-1.0).plus(t)));
+		SimpleMatrix delta2 = theta2.transpose().mult(delta3).elementMult(a2.elementMult(a2.scale(-1.0).plus(t)));
 		delta2 = delta2.extractMatrix(1, delta2.numRows(), 0, delta2.numCols());
 		
 //		printMatrixDimension(delta2, "delta2");
 		
 		// Delta1 = delta2 * (a1)'
-		SimpleMatrix allDelta1 = delta2.mult(this.a1.transpose());
-		SimpleMatrix allDelta2 = delta3.mult(this.a2.transpose());
+		SimpleMatrix allDelta1 = delta2.mult(a1.transpose());
+		SimpleMatrix allDelta2 = delta3.mult(a2.transpose());
 		
 		SimpleMatrix gradTheta1 = allDelta1.scale(1.0 / Double.parseDouble(Integer.toString(m)));
 		SimpleMatrix gradTheta2 = allDelta2.scale(1.0 / Double.parseDouble(Integer.toString(m)));
@@ -480,10 +480,10 @@ public class NeuralNetworkModel {
 			for (int j=0; j < theta1.numCols(); j++) {
 				SimpleMatrix theta1plusE = theta1.copy();
 				theta1plusE.set(i, j, theta1plusE.get(i,j) + epsilon);
-				double cost1 = computeNumericalGradient(theta1plusE, theta2, this.allX, this.allY);
+				double cost1 = computeNumericalGradient(theta1plusE, theta2, allX, allY);
 				SimpleMatrix theta1MinusE = theta1.copy();
 				theta1MinusE.set(i, j, theta1MinusE.get(i,j) - epsilon);
-				double cost2 = computeNumericalGradient(theta1MinusE, theta2, this.allX, this.allY);
+				double cost2 = computeNumericalGradient(theta1MinusE, theta2, allX, allY);
 				double numericalGradient = (cost1 - cost2) / (2.0 * epsilon);
 				System.out.println("Theta1 " + i + ", " + j + ": " + gradTheta1.get(i, j) + "\t" + numericalGradient);
 				
@@ -493,10 +493,10 @@ public class NeuralNetworkModel {
 			for (int j=0; j < theta2.numCols(); j++) {
 				SimpleMatrix theta2plusE = theta2.copy();
 				theta2plusE.set(i, j, theta2plusE.get(i,j) + epsilon);
-				double cost1 = computeNumericalGradient(theta1, theta2plusE, this.allX, this.allY);
+				double cost1 = computeNumericalGradient(theta1, theta2plusE, allX, allY);
 				SimpleMatrix theta2MinusE = theta2.copy();
 				theta2MinusE.set(i, j, theta2MinusE.get(i,j) - epsilon);
-				double cost2 = computeNumericalGradient(theta1, theta2MinusE, this.allX, this.allY);
+				double cost2 = computeNumericalGradient(theta1, theta2MinusE, allX, allY);
 				double numericalGradient = (cost1 - cost2) / (2.0 * epsilon);
 				System.out.println("Theta2 " + i + ", " + j + ": " + gradTheta2.get(i, j) + "\t" + numericalGradient);
 				
@@ -513,10 +513,10 @@ public class NeuralNetworkModel {
 			for (int j=0; j < theta1.numCols(); j++) {
 				SimpleMatrix theta1plusE = theta1.copy();
 				theta1plusE.set(i, j, theta1plusE.get(i,j) + epsilon);
-				double cost1 = computeNumericalGradientReg(theta1plusE, theta2, this.allX, this.allY);
+				double cost1 = computeNumericalGradientReg(theta1plusE, theta2, allX, allY);
 				SimpleMatrix theta1MinusE = theta1.copy();
 				theta1MinusE.set(i, j, theta1MinusE.get(i,j) - epsilon);
-				double cost2 = computeNumericalGradientReg(theta1MinusE, theta2, this.allX, this.allY);
+				double cost2 = computeNumericalGradientReg(theta1MinusE, theta2, allX, allY);
 				double numericalGradient = (cost1 - cost2) / (2.0 * epsilon);
 				System.out.println("Theta1 " + i + ", " + j + ": " + gradTheta1.get(i, j) + "\t" + numericalGradient);
 				
