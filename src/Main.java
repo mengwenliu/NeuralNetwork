@@ -3,7 +3,9 @@ import java.io.*;
 
 public class Main {
 	public static void main(String[] args) throws IOException {
-		int numExamples = 80;
+		// parameters to be modified
+		int numTrainExamples = 80;
+		int numTestExamples = 20;
 		int inputLayerSize = 350;
 		int hiddenLayerSize = 40;
 		int outputLayerSize = 1;
@@ -11,23 +13,30 @@ public class Main {
 		double lambda = 1.0;
 		double lr = 0.1;
 		
-		
-		Datum trainDatum = new Datum(inputLayerSize, numExamples, outputLayerSize, numExamples);
+		//train file
+		Datum trainDatum = new Datum(inputLayerSize, numTrainExamples, outputLayerSize, numTrainExamples);
 		trainDatum.readData("data/autism-train-80");
-		Datum testDatum = new Datum(350, 20, 1, 20);
+		
+		//test file
+		Datum testDatum = new Datum(inputLayerSize, numTestExamples, outputLayerSize, numTestExamples);
 		testDatum.readData("data/autism-test-20");
-        //testInput(datum);
+        
+		//testInput(datum);
 		
 		NeuralNetworkModel nnm = new NeuralNetworkModel();
+		
 		nnm.setInputLayerSize(inputLayerSize);
 		nnm.setHiddenLayerSize(hiddenLayerSize);
 		nnm.setOutputLayerSize(outputLayerSize);
 		
+		
 		nnm.setLearningRate(lr);
 		nnm.setLambda(lambda);
 		nnm.setMaxIteration(maxIteration);
+		
 		nnm.train(trainDatum.getAllX(), trainDatum.getAllY());
 		nnm.test(testDatum.getAllX(), testDatum.getAllY());
+		
 		//nnm.debug(datum.getAllX(), datum.getAllY());
 	}
 	
