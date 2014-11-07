@@ -8,8 +8,6 @@ public class NeuralNetworkModel {
 	
 	protected SimpleMatrix allX, allY, theta1, theta2;
 	
-
-	
 	// number of units in different layers
 	private int inputLayerSize,hiddenLayerSize,outputLayerSize;
 	
@@ -27,6 +25,8 @@ public class NeuralNetworkModel {
 		
 	// activations in each layer
 	private SimpleMatrix a1, a2, p;
+	
+	private PlotCostFunction plotCostFunction = new PlotCostFunction();
 	
 	public NeuralNetworkModel() {
 		
@@ -88,6 +88,9 @@ public class NeuralNetworkModel {
 		
 
 		ArrayList<SimpleMatrix> params = new ArrayList<SimpleMatrix>();
+		
+		double[] x = new double[maxIter];
+		double[] y = new double[maxIter];
 
 		for (int i=0; i < this.maxIter; i++) {
 			System.out.println("iteration: " + (i+1));
@@ -120,8 +123,13 @@ public class NeuralNetworkModel {
 			
 			theta1 = updateParams.get(0).copy();
 			theta2 = updateParams.get(1).copy();
+			
+			x[i] = i+1;
+			y[i] = regCost;
 
 		}
+		
+		plotCostFunction.plotCurves(x, y);
 		
 	}
 	

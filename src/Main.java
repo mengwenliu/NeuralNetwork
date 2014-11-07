@@ -7,19 +7,19 @@ public class Main {
 		int numTrainExamples = 80;
 		int numTestExamples = 20;
 		int inputLayerSize = 350;
-		int hiddenLayerSize = 40;
+		int hiddenLayerSize = 80;
 		int outputLayerSize = 1;
-		int maxIteration = 200;
+		int maxIteration = 400;
 		double lambda = 1.0;
 		double lr = 0.1;
 		
 		//train file
 		Datum trainDatum = new Datum(inputLayerSize, numTrainExamples, outputLayerSize, numTrainExamples);
-		trainDatum.readData("data/autism-train-80");
+		trainDatum.readData("data/autism-train-80.csv");
 		
 		//test file
 		Datum testDatum = new Datum(inputLayerSize, numTestExamples, outputLayerSize, numTestExamples);
-		testDatum.readData("data/autism-test-20");
+		testDatum.readData("data/autism-test-20.csv");
         
 		//testInput(datum);
 		
